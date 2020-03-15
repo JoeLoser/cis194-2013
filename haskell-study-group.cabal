@@ -28,6 +28,8 @@ source-repository head
 library
   exposed-modules:
       Homework1
+      LogAnalysis
+      Log
   other-modules:
       Paths_haskell_study_group
   hs-source-dirs:
@@ -59,6 +61,7 @@ test-suite haskell-study-group-test
   other-modules:
       Paths_haskell_study_group
       Homework1Spec
+      Homework2Spec
   hs-source-dirs:
       test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
