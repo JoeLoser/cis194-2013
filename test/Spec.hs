@@ -28,3 +28,9 @@ main = hspec $ do
     describe "Exercise 3" $ do
         it "calculate sum of digits" $ do
             sumDigits [16, 7, 12, 5] `shouldBe` (22 :: Integer)
+
+    describe "Exercise 4" $ do
+        it "validates valid number" $ do
+            validate 4012888888881881 `shouldBe` True
+        it "Validates invalid number" $ do
+            validate 4012888888881882 `shouldBe` False
