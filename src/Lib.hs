@@ -1,5 +1,5 @@
 module Lib
-( someFunc, toDigits, toDigitsRev
+( someFunc, toDigits, toDigitsRev, doubleEveryOther
 ) where
 
 -- Exercise 1
@@ -11,6 +11,14 @@ toDigits x
 
 toDigitsRev :: Integer -> [Integer]
 toDigitsRev x = reverse (toDigits x)
+
+-- Exercise 2
+doubleEveryOtherLeft [] = []
+doubleEveryOtherLeft (x:[]) = [x]
+doubleEveryOtherLeft (x:y:zs) = x : 2 * y : doubleEveryOtherLeft zs
+
+doubleEveryOther :: [Integer] -> [Integer]
+doubleEveryOther xs = reverse (doubleEveryOtherLeft(reverse xs))
 
 someFunc :: IO ()
 someFunc = putStrLn "someFunc"

@@ -18,3 +18,9 @@ main = hspec $ do
             toDigitsRev 1234 `shouldBe` ([4, 3, 2, 1] :: [Integer])
         it "toDigitsRev converts an integer into list of digits reversed on empty list" $ do
             toDigitsRev (-17) `shouldBe` ([] :: [Integer])
+
+    describe "Exercise 2" $ do
+        it "doubles every other even list" $ do
+            doubleEveryOther [8, 7, 6, 5] `shouldBe` ([16, 7, 12, 5] :: [Integer])
+        it "doubles every other odd list" $ do
+            doubleEveryOther [1, 2, 3] `shouldBe` ([1, 4, 3] :: [Integer])
