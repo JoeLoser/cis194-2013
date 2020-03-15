@@ -1,5 +1,5 @@
 module Lib
-( someFunc, toDigits, toDigitsRev, doubleEveryOther, sumDigits, validate
+( someFunc, toDigits, toDigitsRev, doubleEveryOther, sumDigits, validate, hanoi
 ) where
 
 -- Exercise 1
@@ -34,3 +34,11 @@ validate x = checksum x == 0
 
 someFunc :: IO ()
 someFunc = putStrLn "someFunc"
+
+-- Exercise 5
+type Peg = String
+type Move = (Peg, Peg)
+
+hanoi :: Integer -> Peg -> Peg -> Peg -> [Move]
+hanoi 1 a b c = [(a, b)]
+hanoi n a b c = hanoi(n-1) a c b ++ [(a, b)] ++ hanoi(n-1) c b a

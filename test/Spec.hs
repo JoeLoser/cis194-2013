@@ -34,3 +34,7 @@ main = hspec $ do
             validate 4012888888881881 `shouldBe` True
         it "Validates invalid number" $ do
             validate 4012888888881882 `shouldBe` False
+
+    describe "Exercise 5" $ do
+        it "2 disks" $ do
+            hanoi 2 "a" "b" "c" `shouldBe` [("a", "c"), ("a", "b"), ("c", "b")]
