@@ -2,7 +2,7 @@ import Test.Hspec
 import Test.QuickCheck
 import Control.Exception (evaluate)
 
-import Lib
+import Homework1
 
 main :: IO ()
 

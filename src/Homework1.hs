@@ -1,4 +1,4 @@
-module Lib
+module Homework1
 ( someFunc, toDigits, toDigitsRev, doubleEveryOther, sumDigits, validate, hanoi
 ) where
 

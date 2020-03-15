@@ -27,7 +27,7 @@ source-repository head
 
 library
   exposed-modules:
-      Lib
+      Homework1
   other-modules:
       Paths_haskell_study_group
   hs-source-dirs:
