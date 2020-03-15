@@ -1,5 +1,5 @@
 module Lib
-( someFunc, toDigits, toDigitsRev, doubleEveryOther
+( someFunc, toDigits, toDigitsRev, doubleEveryOther, sumDigits
 ) where
 
 -- Exercise 1
@@ -19,6 +19,11 @@ doubleEveryOtherLeft (x:y:zs) = x : 2 * y : doubleEveryOtherLeft zs
 
 doubleEveryOther :: [Integer] -> [Integer]
 doubleEveryOther xs = reverse (doubleEveryOtherLeft(reverse xs))
+
+-- Exercise 3
+sumDigits :: [Integer] -> Integer
+sumDigits [] = 0
+sumDigits (x:xs) = sum (toDigits x) + sumDigits xs
 
 someFunc :: IO ()
 someFunc = putStrLn "someFunc"

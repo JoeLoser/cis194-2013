@@ -24,3 +24,7 @@ main = hspec $ do
             doubleEveryOther [8, 7, 6, 5] `shouldBe` ([16, 7, 12, 5] :: [Integer])
         it "doubles every other odd list" $ do
             doubleEveryOther [1, 2, 3] `shouldBe` ([1, 4, 3] :: [Integer])
+
+    describe "Exercise 3" $ do
+        it "calculate sum of digits" $ do
+            sumDigits [16, 7, 12, 5] `shouldBe` (22 :: Integer)
