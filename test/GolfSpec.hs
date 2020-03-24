@@ -15,3 +15,11 @@ spec = do
             skips [1] `shouldBe` ([[1]] :: [[Int]])
         it "skips list of two elements" $ do
             skips [True, False] `shouldBe` ([[True, False], [False]] :: [[Bool]])
+
+    describe "Exercise 2" $ do
+        it "single local maxima" $ do
+            localMaxima [2, 3, 4, 1, 5] `shouldBe` ([4] :: [Integer])
+        it "two local maxima" $ do
+            localMaxima [2, 9, 5, 6, 1] `shouldBe` ([9, 6] :: [Integer])
+        it "no local maxima" $ do
+            localMaxima [1..5] `shouldBe` ([] :: [Integer])
