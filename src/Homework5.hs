@@ -1,25 +1,29 @@
+{-# LANGUAGE TypeSynonymInstances #-}
+{-# LANGUAGE FlexibleInstances #-}
+
 module Homework5 where
 
 import ExprT
 import Parser
+import StackVM
 
 -- Exercise 1
 eval :: ExprT -> Integer
-eval (Lit x) = x
-eval (Add e1 e2) = eval e1 + eval e2
-eval (Mul e1 e2) = eval e1 * eval e2
+eval (ExprT.Lit x) = x
+eval (ExprT.Add e1 e2) = eval e1 + eval e2
+eval (ExprT.Mul e1 e2) = eval e1 * eval e2
 
 evalTest = and
   [
-  eval (Lit 2) == 2,
-  eval (Add (Lit 2) (Lit 3)) == 5,
-  eval (Mul (Add (Lit 2) (Lit 3)) (Lit 4)) == 20
+  eval (ExprT.Lit 2) == 2,
+  eval (ExprT.Add (ExprT.Lit 2) (ExprT.Lit 3)) == 5,
+  eval (ExprT.Mul (ExprT.Add (ExprT.Lit 2) (ExprT.Lit 3)) (ExprT.Lit 4)) == 20
   ]
 
 
 -- Exercise 2
 evalStr :: String -> Maybe Integer
-evalStr = fmap eval . parseExp Lit Add Mul
+evalStr = fmap eval . parseExp ExprT.Lit ExprT.Add ExprT.Mul
 
 evalStrTest = and
   [
@@ -48,8 +52,8 @@ reify = id
 reifyTest = and
   [
     (reify $ lit 2) == Lit 2,
-    (reify $ add (lit 2) (lit 3)) == Add (Lit 2) (Lit 3),
-    (reify $ mul (lit 2) (lit 3)) == Mul (Lit 2) (Lit 3)
+    (reify $ add (lit 2) (lit 3)) == ExprT.Add (Lit 2) (Lit 3),
+    (reify $ mul (lit 2) (lit 3)) == ExprT.Mul (Lit 2) (Lit 3)
   ]
 
 
@@ -83,3 +87,21 @@ testInteger = testExp :: Maybe Integer
 testBool = testExp :: Maybe Bool
 testMinMax = testExp :: Maybe MinMax
 testMod7 = testExp :: Maybe Mod7
+
+
+-- Exercise 5
+instance Expr Program where
+  lit x = [StackVM.PushI x]
+  add e1 e2 = concat [e1, e2, [StackVM.Add]]
+  mul e1 e2 = concat [e1, e2, [StackVM.Mul]]
+
+compile :: String -> Maybe Program
+compile = parseExp lit add mul
+
+compileTest = and
+  [
+    compile "2 + * 3" == Nothing,
+    compile "2" == Just [PushI 2],
+    compile "2 + 3" == Just [PushI 2, PushI 3, StackVM.Add],
+    compile "2 * 3" == Just [PushI 2, PushI 3, StackVM.Mul]
+  ]
