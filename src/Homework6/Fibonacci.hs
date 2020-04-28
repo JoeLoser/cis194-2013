@@ -23,3 +23,11 @@ testFib = and
 fibs1 :: [Integer]
 fibs1 = map fib [0..]
 
+-- Exercise 3
+data Stream element = Cons element (Stream element)
+
+instance Show a => Show (Stream a) where
+    show = show . take 20 . streamToList
+
+streamToList :: Stream a -> [a]
+streamToList (Cons x y) = x : streamToList y
