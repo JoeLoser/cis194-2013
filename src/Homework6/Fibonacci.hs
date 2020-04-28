@@ -23,6 +23,15 @@ testFib = and
 fibs1 :: [Integer]
 fibs1 = map fib [0..]
 
+-- Exercise 2
+fibs2' :: Integer -> Integer -> [Integer]
+fibs2' x y = x : fibs2' y (x + y)
+
+fibs2 :: [Integer]
+fibs2 = fibs2' 0 1
+
+testFibs2 = take 20 fibs1 == take 20 fibs2
+
 -- Exercise 3
 data Stream element = Cons element (Stream element)
 
