@@ -31,3 +31,18 @@ instance Show a => Show (Stream a) where
 
 streamToList :: Stream a -> [a]
 streamToList (Cons x y) = x : streamToList y
+
+-- Exercise 4
+streamRepeat :: a -> Stream a
+streamRepeat x = Cons x (streamRepeat x)
+
+instance Functor Stream where
+    fmap f (Cons x xs) = Cons (f x) (fmap f xs)
+
+streamMap :: (a -> b) -> Stream a -> Stream b
+{-Can define inline as below, or define fmap on Stream-}
+{-streamMap f (Cons x xs) = Cons (f x) (streamMap f xs)-}
+streamMap = fmap
+
+streamFromSeed :: (a -> a) -> a -> Stream a
+streamFromSeed f seed = Cons seed (streamFromSeed f (f seed))
