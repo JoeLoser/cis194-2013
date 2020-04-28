@@ -46,3 +46,7 @@ streamMap = fmap
 
 streamFromSeed :: (a -> a) -> a -> Stream a
 streamFromSeed f seed = Cons seed (streamFromSeed f (f seed))
+
+-- Exercise 5
+nats :: Stream Integer
+nats = streamFromSeed (+1) 0
