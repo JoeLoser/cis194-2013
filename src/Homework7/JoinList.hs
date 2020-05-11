@@ -90,3 +90,29 @@ indexJTest = and
         singleC   = Single (Size 1) 'c'
         appendAB  = Append (Size 2) singleA singleB
         appendABC = Append (Size 3) appendAB singleC
+
+
+dropJ :: (Sized b, Monoid b) => Int -> JoinList b a -> JoinList b a
+dropJ _ Empty                               = Empty
+dropJ index jl | index <= 0                 = jl
+dropJ index jl | index >= getTaggedSize jl  = jl
+dropJ _ (Single _ _)                        = Empty
+dropJ n (Append _ jl1 jl2)
+    | n < leftSize                          = dropJ n jl1 +++ jl2
+    | otherwise                             = dropJ (n - leftSize) jl2
+  where leftSize = getTaggedSize jl1
+
+
+dropJTest :: Bool
+dropJTest = and
+  [
+    jlToList (dropJ n jl) == drop n (jlToList jl) |
+      n <- [(-20)..20],
+      jl <- [empty, singleA, appendAB, appendABC]
+  ]
+  where empty     = (Empty :: JoinList Size Char)
+        singleA   = Single (Size 1) 'a'
+        singleB   = Single (Size 1) 'b'
+        singleC   = Single (Size 1) 'c'
+        appendAB  = Append (Size 2) singleA singleB
+        appendABC = Append (Size 3) appendAB singleC
