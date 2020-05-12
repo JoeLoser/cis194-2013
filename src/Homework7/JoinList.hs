@@ -2,6 +2,7 @@ module JoinList where
 
 import Data.Monoid
 import Sized
+import Scrabble
 
 data JoinList m a = Empty
                   | Single m a
@@ -141,3 +142,17 @@ takeJTest = and
         singleC   = Single (Size 1) 'c'
         appendAB  = Append (Size 2) singleA singleB
         appendABC = Append (Size 3) appendAB singleC
+
+-- Exercise 3
+-- Returns a JoinList with the score of the input string as the metadata
+scoreLine :: String -> JoinList Score String
+scoreLine s = Single (scoreString s) s
+
+testScoreLine :: Bool
+testScoreLine = and
+  [
+    scoreLine "yay" == Single (Score 9) "yay",
+    scoreLine "haskell" == Single (Score 14) "haskell",
+    scoreLine "yay " +++ scoreLine "haskell!" ==
+      Append (Score 23) (Single (Score 9) "yay ") (Single (Score 14) "haskell!")
+  ]
