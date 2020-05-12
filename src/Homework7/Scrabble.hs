@@ -46,8 +46,6 @@ testScoreString = and
 
 instance Semigroup Score where
   (<>) = (+)
-  {-Score m1 <> Score m2 = Score (m1 + m2)-}
 
 instance Monoid Score where
   mempty  = Score 0
-  mappend = (+)

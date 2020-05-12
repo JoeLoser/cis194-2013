@@ -1,23 +1,28 @@
+{-# LANGUAGE FlexibleInstances #-}
+
 module JoinList where
 
 import Data.Monoid
+import Data.Semigroup
+
+import Buffer
 import Sized
 import Scrabble
 
-data JoinList m a = Empty
-                  | Single m a
-                  | Append m (JoinList m a) (JoinList m a)
+data JoinList s a = Empty
+                  | Single s a
+                  | Append s (JoinList s a) (JoinList s a)
   deriving (Eq, Show)
 
 -- Exercise 1
-(+++) :: Monoid m => JoinList m a -> JoinList m a -> JoinList m a
+(+++) :: Semigroup s => JoinList s a -> JoinList s a -> JoinList s a
 jl1 +++ jl2 = Append (tag jl1 <> tag jl2) jl1 jl2
 
 -- Get annotation at the root of a JoinList
-tag :: Monoid m => JoinList m a -> m
-tag Empty = mempty
-tag (Single m _) = m
-tag (Append m _ _) = m
+tag :: Semigroup s => JoinList s a -> s
+tag Empty = undefined
+tag (Single s _) = s
+tag (Append s _ _) = s
 
 appendTest :: Bool
 appendTest = and
@@ -44,17 +49,17 @@ appendTest = and
 tagTest :: Bool
 tagTest = and
   [
-      tag Empty == "",
+      {-tag Empty == "",-}
       tag (Single "a" 'a') == "a",
       tag (Append "ab" (Single "a" 'a') (Single "b" 'b')) == "ab"
   ]
 
 
 -- Exercise 2
-getTaggedSize :: (Monoid b, Sized b) => JoinList b a -> Int
+getTaggedSize :: (Semigroup b, Sized b) => JoinList b a -> Int
 getTaggedSize = getSize . size . tag
 
-indexJ :: (Sized b, Monoid b) => Int -> JoinList b a -> Maybe a
+indexJ :: (Sized b, Semigroup b) => Int -> JoinList b a -> Maybe a
 indexJ _ Empty                               = Nothing
 indexJ index _ | index < 0                   = Nothing
 indexJ index jl | index >= getTaggedSize jl  = Nothing
@@ -93,7 +98,7 @@ indexJTest = and
         appendABC = Append (Size 3) appendAB singleC
 
 
-dropJ :: (Sized b, Monoid b) => Int -> JoinList b a -> JoinList b a
+dropJ :: (Sized b, Semigroup b) => Int -> JoinList b a -> JoinList b a
 dropJ _ Empty                               = Empty
 dropJ index jl | index <= 0                 = jl
 dropJ index jl | index >= getTaggedSize jl  = jl
@@ -119,7 +124,7 @@ dropJTest = and
         appendABC = Append (Size 3) appendAB singleC
 
 
-takeJ :: (Sized b, Monoid b) => Int -> JoinList b a -> JoinList b a
+takeJ :: (Sized b, Semigroup b) => Int -> JoinList b a -> JoinList b a
 takeJ _ Empty                      = Empty
 takeJ n _  | n <= 0                = Empty
 takeJ n jl | n >= getTaggedSize jl = jl
@@ -156,3 +161,39 @@ testScoreLine = and
     scoreLine "yay " +++ scoreLine "haskell!" ==
       Append (Score 23) (Single (Score 9) "yay ") (Single (Score 14) "haskell!")
   ]
+
+
+-- Exercise 4
+instance Semigroup m => Semigroup (JoinList m a) where
+  (<>) = (+++)
+
+instance Monoid m => Monoid (JoinList m a) where
+  mempty = Empty
+
+instance Buffer (JoinList (Score, Size) String) where
+  toString Empty = ""
+  toString (Single _ s) = s
+  toString (Append _ jl1 jl2) = toString jl1 ++ "\n" ++ toString jl2
+
+  {--- | Create a buffer from a String.-}
+  {-fromString :: String -> b-}
+  fromString = undefined
+
+  {--- | Extract the nth line (0-indexed) from a buffer.  Return Nothing-}
+  {--- for out-of-bounds indices.-}
+  line = indexJ
+
+  {---   with the @n@th line replaced by @ln@.  If the index is-}
+  {---   out-of-bounds, the buffer should be returned unmodified.-}
+  {-replaceLine :: Int -> String -> b -> b-}
+  replaceLine n s jl = takeJ n jl +++ fromString s +++ dropJ (n + 1) jl
+
+  {--- | Compute the number of lines in the buffer.-}
+  numLines Empty = 0
+  numLines (Single (_, size) _) = getSize size
+  numLines (Append (_, size) _ _) = getSize size
+
+  {--- | Compute the value of the buffer, i.e. the amount someone would-}
+  {---   be paid for publishing the contents of the buffer.-}
+  {-value :: b -> Int-}
+  value = undefined
