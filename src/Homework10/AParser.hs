@@ -58,3 +58,13 @@ first f (a, c) = (f a, c)
 
 instance Functor Parser where
   fmap f p = Parser $ fmap (first f) . runParser p
+
+-- Exercise 2
+instance Applicative Parser where
+  pure a = Parser f
+    where f str = Just (a, str)
+
+  p1 <*> p2 = Parser p
+    where p str = runParser p1 str >>= g -- Run p1 to produce function which is passed to g
+          g (f, remainingInput) = runParser (f <$> p2) remainingInput
+                                {-= runParser fmappedParser remainingInput-}
