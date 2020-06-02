@@ -106,3 +106,14 @@ instance Alternative Parser where
   empty = Parser (const Nothing)
   p1 <|> p2 = Parser f
     where f str = runParser p1 str <|> runParser p2 str
+
+-- Exercise 5
+intOrUppercase :: Parser ()
+intOrUppercase = const () <$> posInt <|> const () <$> satisfy isUpper
+
+intOrUppercaseTest = and
+  [
+    runParser intOrUppercase "342abcd" == Just ((), "abcd"),
+    runParser intOrUppercase "XYZ" == Just ((), "YZ"),
+    runParser intOrUppercase "foo" == Nothing
+  ]
