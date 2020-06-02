@@ -99,3 +99,10 @@ intPairTest = and
     runParser intPair "1234" == Nothing,
     runParser intPair "12 34 56" == Nothing
   ]
+
+
+-- Exercise 4
+instance Alternative Parser where
+  empty = Parser (const Nothing)
+  p1 <|> p2 = Parser f
+    where f str = runParser p1 str <|> runParser p2 str
