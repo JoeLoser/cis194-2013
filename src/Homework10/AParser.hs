@@ -68,3 +68,34 @@ instance Applicative Parser where
     where p str = runParser p1 str >>= g -- Run p1 to produce function which is passed to g
           g (f, remainingInput) = runParser (f <$> p2) remainingInput
                                 {-= runParser fmappedParser remainingInput-}
+
+-- Exercise 3
+abParser :: Parser (Char, Char)
+abParser = (,) <$> char 'a' <*> char 'b'
+
+abParserTest = and
+  [
+    runParser abParser "abcdef" == Just (('a', 'b'), "cdef"),
+    runParser abParser "notab" == Nothing
+  ]
+
+-- Just like abParser above but returns () instead of characters 'a' and 'b'
+abParser_ :: Parser ()
+abParser_ = const () <$> abParser
+
+abParser_Test = and
+  [
+    runParser abParser_ "abcdef" == Just ((), "cdef"),
+    runParser abParser_ "notab" == Nothing
+  ]
+
+-- Parser for two integers separated by a space
+intPair :: Parser [Integer]
+intPair = (\a _ b -> [a, b]) <$> posInt <*> char ' ' <*> posInt
+
+intPairTest = and
+  [
+    runParser intPair "12 34" == Just ([12, 34], ""),
+    runParser intPair "1234" == Nothing,
+    runParser intPair "12 34 56" == Nothing
+  ]
