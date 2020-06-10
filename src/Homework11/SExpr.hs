@@ -38,10 +38,25 @@ testOneOrMore = and
 ------------------------------------------------------------
 
 spaces :: Parser String
-spaces = undefined
+spaces = zeroOrMore (satisfy isSpace)
+-- satisfy isSpace is of type Parser Char
+
+testSpaces = and
+  [
+    runParser spaces "abc" == Just ("", "abc"),
+    runParser spaces " abc" == Just (" ", "abc"),
+    runParser spaces "  abc" == Just ("  ", "abc")
+  ]
 
 ident :: Parser String
-ident = undefined
+ident = liftA2 (:) (satisfy isAlpha) (zeroOrMore $ satisfy isAlphaNum)
+
+testIdent = and
+  [
+    runParser ident "foobar baz" == Just ("foobar", " baz"),
+    runParser ident "foo33fA" == Just ("foo33fA", ""),
+    runParser ident "2bad" == Nothing
+  ]
 
 ------------------------------------------------------------
 --  3. Parsing S-expressions
